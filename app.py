@@ -51,7 +51,7 @@ def style_transfer(path):
         try:
             checkpoint = os.environ["CHECKPOINT"]
         except:
-            checkpoint = "/checkpoint/la_muse.ckpt"
+            checkpoint = "/la_muse.ckpt"
 
         ffwd_different_dimensions(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
         # ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
