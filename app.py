@@ -19,7 +19,7 @@ from flask import Flask, send_file, request
 from werkzeug.exceptions import BadRequest
 from werkzeug.utils import secure_filename
 
-from evaluate import ffwd_to_img
+from evaluate import ffwd_to_img, ffwd_different_dimensions
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 app = Flask(__name__)
@@ -40,8 +40,8 @@ def style_transfer(path):
         return BadRequest("Invalid file type")
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        input_filepath = os.path.join('./images/', filename)
-        output_filepath = os.path.join('/output/', filename)
+        input_filepath = os.path.join('/images_input/', filename)
+        output_filepath = os.path.join('/images_output/', filename)
         file.save(input_filepath)
 
         # Get checkpoint filename from la_muse
@@ -53,7 +53,7 @@ def style_transfer(path):
         except:
             checkpoint = "/la_muse.ckpt"
 
-        ffwd_different_dimensions(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
+        ffwd_different_dimensions([input_filepath], [output_filepath], checkpoint, '/gpu:0')
         # ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
         return send_file(output_filepath, mimetype='image/jpg')
 
