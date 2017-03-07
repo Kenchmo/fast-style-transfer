@@ -45,8 +45,16 @@ def style_transfer(path):
         file.save(input_filepath)
 
         # Get checkpoint filename from la_muse
-        checkpoint = request.form.get("checkpoint") or "la_muse.ckpt"
-        ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
+        # checkpoint = request.form.get("checkpoint") or "la_muse.ckpt"
+        # checkpoint = "/checkpoint/la_muse.ckpt"
+        # if os.environ['d']
+        try:
+            checkpoint = os.environ["CHECKPOINT"]
+        except:
+            checkpoint = "/checkpoint/la_muse.ckpt"
+
+        ffwd_different_dimensions(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
+        # ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
         return send_file(output_filepath, mimetype='image/jpg')
 
 
