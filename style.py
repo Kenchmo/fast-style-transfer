@@ -138,12 +138,14 @@ def main():
     elif options.test:
         content_targets = [options.test]
 
+    model_name = os.path.splitext(os.path.basename(options.style))[0]
+
     kwargs = {
         "slow":options.slow,
         "epochs":options.epochs,
         "print_iterations":options.checkpoint_iterations,
         "batch_size":options.batch_size,
-        "save_path":os.path.join(options.checkpoint_dir,'fns.ckpt'),
+        "save_path":os.path.join(options.checkpoint_dir,'.'.join([model_name,'ckpt'])),
         "learning_rate":options.learning_rate,
         "device":options.device,
         "total_iterations":options.total_iterations,
