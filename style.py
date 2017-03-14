@@ -37,11 +37,11 @@ def build_parser():
 
     parser.add_argument('--test', type=str,
                         dest='test', help='test image path',
-                        metavar='TEST', default=False)
+                        metavar='TEST', default="/fast-style-transfer/examples/content/chicago.jpg")
 
     parser.add_argument('--test-dir', type=str,
                         dest='test_dir', help='test image save dir',
-                        metavar='TEST_DIR', default=False)
+                        metavar='TEST_DIR', default="/fast-style-transfer/examples/content/")
 
     parser.add_argument('--slow', dest='slow', action='store_true',
                         help='gatys\' approach (for debugging, not supported)',
