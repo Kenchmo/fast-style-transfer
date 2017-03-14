@@ -53,9 +53,14 @@ def style_transfer(path):
         except:
             checkpoint = "/la_muse.ckpt"
 
+        try:
+            checkpoint_dir = os.environ["CHECKPOINT_DIR"]
+        except:
+            checkpoint_dir = "/data"
+
         checkpoint = request.form.get("checkpoint") or checkpoint
 
-        ffwd_different_dimensions([input_filepath], [output_filepath], checkpoint, '/gpu:0')
+        ffwd_different_dimensions([input_filepath], [output_filepath], os.path.join(checkpoint_dir, checkpoint), '/gpu:0')
         # ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
         return send_file(output_filepath, mimetype='image/jpg')
 
