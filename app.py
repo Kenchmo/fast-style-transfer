@@ -22,7 +22,7 @@ from werkzeug.utils import secure_filename
 from evaluate import ffwd_to_img, ffwd_different_dimensions
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 
 @app.route('/<path:path>', methods=["POST"])
@@ -63,6 +63,10 @@ def style_transfer(path):
         ffwd_different_dimensions([input_filepath], [output_filepath], os.path.join(checkpoint_dir, checkpoint), '/gpu:0')
         # ffwd_to_img(input_filepath, output_filepath, '/input/' + checkpoint, '/gpu:0')
         return send_file(output_filepath, mimetype='image/jpg')
+
+@app.route('/', methods=['GET'])
+def root():
+    return app.send_static_file('index.html')
 
 
 def allowed_file(filename):
