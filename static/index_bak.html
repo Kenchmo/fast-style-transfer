@@ -13,6 +13,7 @@
 
 <script src="./resource/jquery.js"></script>
 <script src="./resource/jquery.ui.widget.js"></script>
+<script src="./resource/jquery.iframe-transport.js"></script>
 <script src="./resource/jquery.fileupload.js"></script>
 
 <div class="fileupload fileupload-new" >
@@ -26,19 +27,16 @@
   <span class="fileupload-preview"></span>
   <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
   
-	<div class="upload-form" style="display: inline;">
+	<div class="upload-form">
 		<button class="upload-button btn btn-primary">图片转换</button>
 		<select class="form-control checkpoint">
+		  <option value="">请选择</option>
 		  <option value="/input/la_muse.ckpt">la_muse</option>
-		  <option value="/input/rain_princess.ckpt">rain_prince</option>
+		  <option value="/input/rain_princess.ckpt">rain_princess</option>
 		  <option value="/input/scream.ckpt">scream</option>
 		  <option value="/input/udnie.ckpt">udnie</option>
 		  <option value="/input/wave.ckpt">wave</option>
 		</select>
-		<div class="upload-status">
-			<span class="uploading-text">图片转换中...</span>
-			<span class="upload-failed-text">图片转换失败</span>
-		</div>
 	</div>
 </div>
 
@@ -68,11 +66,10 @@ function convertFile(file) {
 	
   formData.append('file', file, file.name)
   var xhr = new XMLHttpRequest();    
-  var url = '/' + file.name;
+  var url = '/proxy/' + file.name;
 	xhr.open("post", url, true);
 	xhr.responseType = "blob";
 	xhr.onload = function() {
-			$('.uploading-text').hide();
 	    if (this.status == 200) {
 	        var blob = this.response;  // this.response也就是请求的返回就是Blob对象
 	        var img = $('<img/>')
@@ -84,8 +81,6 @@ function convertFile(file) {
 						window.URL.revokeObjectURL(img.attr('src'))
 					});
 	        $('.pic-box .target-pic').html(img);
-	    }else {
-	    	$('.upload-failed-text').show();
 	    }
 	}
 	xhr.send(formData);
@@ -98,21 +93,14 @@ $(function () {
 	    .click(function () {
 	        picFormData.submit();
 	    });
-	  $('.origin-pic').click(function() {
-			$('#fileupload').click();
-	  });
     $('#fileupload').fileupload({
         add: function (e, data) {
         		readFile(data.files[0])
         		picFormData = data;
             $('.upload-form').show();
-            $('.uploading-text').hide();
-            $('.upload-failed-text').hide();
         },
         submit: function (e, data) {
-        	$('.uploading-text').show();
-        	$('.upload-failed-text').hide();
-		      convertFile(data.files[0]);
+		      convertFile(data.files[0])
 		      return false;
 		  	},
         done: function (e, data) {
@@ -134,7 +122,7 @@ body{text-align:center; padding-top:30px;}
 .hide-text{font:0/0 a;color:transparent;text-shadow:none;background-color:transparent;border:0;}
 .input-block-level{display:block;width:100%;min-height:30px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
 .btn-file{overflow:hidden;position:relative;vertical-align:middle;}.btn-file>input{position:absolute;top:0;right:0;margin:0;opacity:0;filter:alpha(opacity=0);transform:translate(-300px, 0) scale(4);font-size:23px;direction:ltr;cursor:pointer;}
-.fileupload{margin-bottom:35px;}.fileupload .uneditable-input{display:inline-block;margin-bottom:0px;vertical-align:middle;cursor:text;}
+.fileupload{margin-bottom:9px;}.fileupload .uneditable-input{display:inline-block;margin-bottom:0px;vertical-align:middle;cursor:text;}
 .fileupload .thumbnail{overflow:hidden;display:inline-block;margin-bottom:5px;vertical-align:middle;text-align:center;}.fileupload .thumbnail>img{display:inline-block;vertical-align:middle;max-height:100%;}
 .fileupload .btn{vertical-align:middle;}
 .fileupload-exists .fileupload-new,.fileupload-new .fileupload-exists{display:none;}
@@ -175,16 +163,6 @@ body{text-align:center; padding-top:30px;}
 .target-pic {
 	float: right;
 	margin-right: 25px;
-}
-.upload-status {
-	height: 20px;
-	font-weight: bold;
-}
-.origin-pic {
-	cursor: pointer;
-}
-.origin-pic:hover{
-	background-color: #f3eeee;
 }
 </style>
 
